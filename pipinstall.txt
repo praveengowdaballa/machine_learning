@@ -1,0 +1,434 @@
+    1  apt install dnsutils
+    2  nslookup
+    3  exit
+    4  apt-get update
+    5  sudo apt upgrade
+    6  python --version
+    7  wget 
+    8  wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
+    9  ll
+   10  mkdir packages
+   11  mv Python-3.13.0.tgz packages/
+   12  cd packages/
+   13  ll
+   14  tar -xvzf Python-3.13.0.tgz 
+   15  ll
+   16  ll Python-3.13.0
+   17  cd Python-3.13.0
+   18  bash install-sh 
+   19  ls
+   20  pwd
+   21  cd ..
+   22  python3 --version
+   23  which Python-3.13.0
+   24  which Python3
+   25  which Python3.10
+   26  python3
+   27  cd
+   28  exit
+   29  cd /mnt/c/Users/PHa/ot-projects/ai/
+   30  ls
+   31  docker-compose -f compose.with-jupyter.yaml up -d
+   32  vim test.sh
+   33  bash test.sh 
+   34  vim compose.with-jupyter.yaml 
+   35  docker-compose -f compose.with-jupyter.yaml up -d
+   36  vim compose.with-jupyter.yaml 
+   37  pip
+   38  python -m ensurepip --upgrade
+   39  python3 -m ensurepip --upgrade
+   40  python get-pip.py
+   41  python3 get-pip.py
+   42  vim get-pip.py
+   43  cd /mnt/c/Users/PHa/ot-projects/ai/
+   44  ls
+   45  python3 get-pip.py 
+   46  pip --version
+   47  echo $HOST_IP
+   48  export HOST_IP=172.30.218.185
+   49  ls
+   50  export SHARED_DIR=~/mlrun-data
+   51  mkdir -p $SHARED_DIR
+   52  docker-compose -f compose.with-jupyter.yaml up -d
+   53  mlrun config set -a http://localhost:8080
+   54  pip install mlrun
+   55  mlrun config set -a http://localhost:8080
+   56  import mlrun
+   57  pip install mlrun install scikit-learn~=1.4.0 numpy~=1.26
+   58  pip install mlrun install scikit-learn~=1.4.0 numpy
+   59  mkdir log_analyzer
+   60  cd log_analyzer/
+   61  python -m pip install elb-log-analyzer
+   62  python3 -m pip install elb-log-analyzer
+   63  python3 -m pip install --upgrade pip
+   64  python3 -m pip install --upgrade pip --user
+   65  pfsso
+   66  amch
+   67  aws --version
+   68  whcih aws 
+   69  which aws 
+   70  sudo apt remove awscli
+   71  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+   72  unzip awscliv2.zip
+   73  sudo ./aws/install
+   74  ls
+   75  unzip awscliv2.zip 
+   76  apt install unzip
+   77  unzip awscliv2.zip 
+   78  sudo ./aws/install
+   79  aws --version
+   80  /usr/local/bin/aws --version
+   81  which python3
+   82  cp /usr/local/bin/aws /usr/bin/aws
+   83  aws --version
+   84  ls /usr/local/bin/aws
+   85  ls /usr/local/bin/
+   86  cp /usr/local/bin/awspx /usr/bin/
+   87  cp /usr/local/bin/aws_completer /usr/bin/
+   88  aws --version
+   89  ll /usr/local/bin/
+   90  ls /usr/local/bin/
+   91  rm -rf /usr/bin/aws*
+   92  /usr/local/bin/aws --version
+   93  vim ~/.bash_profile
+   94  vim ~/.bashrc 
+   95  source ~/.bashrc 
+   96  aws
+   97  aws --version
+   98  cp /mnt/c/Users/pha/.local/bin/amch  /usr/bin/
+   99  amch -c
+  100  dos2unix /usr/bin/amch 
+  101  amch -c
+  102  vim ~/.aws/config 
+  103  amch
+  104  aws s3 ls
+  105  vim ~/.aws/config 
+  106  aws s3 ls --profile 264153282450_Fed_Account_Admin]
+  107  aws s3 ls --profile 264153282450_Fed_Account_Admin
+  108  vim ~/.aws/credentials 
+  109  > ~/.aws/credentials 
+  110  aws s3 ls --profile 264153282450_Fed_Account_Admin
+  111  vim ~/.aws/amch_credenetials_exporter.sh
+  112  cp /mnt/c/Users/pha/.aws/amch_exporter.sh ~/.aws/
+  113  chmod +x ~/.aws/amch_exporter.sh 
+  114  bash ~/.aws/amch_exporter.sh #!/bin/bash
+  115  ######################################################################
+  116  # AMCH AWS Profile Exporter Script                                   
+  117  #                                                                    
+  118  # Description:                                                      
+  119  #   This script securely exports AWS credentials for use with        
+  120  #   Terraform workloads and regular AWS API executions.              
+  121  #   It leverages environment variables to enhance security by        
+  122  #   avoiding the storage of sensitive information in Terraform       
+  123  #   configuration files.                                            
+  124  #                                                                    
+  125  # Requirements:                                                     
+  126  #   - AWS CLI                                                        
+  127  #   - jq (JSON processor)                                           
+  128  #   - AMCH (AWS credentials manager)                                
+  129  #                                                                    
+  130  # Usage:                                                             
+  131  #   ./amch_aws_profile_exporter.sh <profile_name>                   
+  132  #                                                                    
+  133  # Example:                                                           
+  134  #   ./amch_aws_profile_exporter.sh 068500874698_Fed_Account_sre     
+  135  #                                                                    
+  136  # Note:                                                              
+  137  #   Ensure that the necessary commands (aws, jq, amch) are           
+  138  #   installed and accessible in your environment.                   
+  139  #   This script must be executed with appropriate permissions.       
+  140  #                                                                    
+  141  # Author: Praveen HA                                                
+  142  # Date: 08/05/2024                                               
+  143  ######################################################################
+  144  set +x
+  145  RED='\033[0;31m'
+  146  GREEN='\033[0;32m'
+  147  YELLOW='\033[1;33m'
+  148  NC='\033[0m' 
+  149  usage() {       echo -e "\e[32m
+  150     ██████╗   ██████╗    █████╗   ███████╗
+  151    ██╔════╝  ██╔════╝   ██╔══██╗  ██╔════╝
+  152    ██║       ██║        ██║  ██║  █████╗
+  153    ██║       ██║        ██║  ██║  ██╔══╝
+  154    ╚██████╗  ╚██████╗   ╚█████╔╝  ███████╗
+  155      ╚════╝    ╚════╝     ╚═══╝    ╚═════╝
+  156     AMCH Credential Exporter for terraform workloads from OpenText [ Cloud Center of Excellence ].
+  157       \e[0m";     echo -e "${YELLOW}Usage:${NC} ./$0  <your profile eg: 068500874698_Fed_Account_sre> ";     exit 1; }
+  158  if [[ "$1" == "--help" ]]; then     usage     fi
+  159  check_command() {     if ! command -v "$1" &> /dev/null; then         echo "$2 is not installed. Please install it and try again.";         exit 1;     fi;     }
+  160  check_command aws "AWS CLI"
+  161  check_command jq "JSON processor"
+  162  vim ~/.aws/config 
+  163  #!/bin/bash
+  164  ######################################################################
+  165  # AMCH AWS Profile Exporter Script                                   
+  166  #                                                                    
+  167  # Description:                                                      
+  168  #   This script securely exports AWS credentials for use with        
+  169  #   Terraform workloads and regular AWS API executions.              
+  170  #   It leverages environment variables to enhance security by        
+  171  #   avoiding the storage of sensitive information in Terraform       
+  172  #   configuration files.                                            
+  173  #                                                                    
+  174  # Requirements:                                                     
+  175  #   - AWS CLI                                                        
+  176  #   - jq (JSON processor)                                           
+  177  #   - AMCH (AWS credentials manager)                                
+  178  #                                                                    
+  179  # Usage:                                                             
+  180  #   ./amch_aws_profile_exporter.sh <profile_name>                   
+  181  #                                                                    
+  182  # Example:                                                           
+  183  #   ./amch_aws_profile_exporter.sh 068500874698_Fed_Account_sre     
+  184  #                                                                    
+  185  # Note:                                                              
+  186  #   Ensure that the necessary commands (aws, jq, amch) are           
+  187  #   installed and accessible in your environment.                   
+  188  #   This script must be executed with appropriate permissions.       
+  189  #                                                                    
+  190  # Author: Praveen HA                                                
+  191  # Date: 08/05/2024                                               
+  192  ######################################################################
+  193  set +x
+  194  RED='\033[0;31m'
+  195  GREEN='\033[0;32m'
+  196  YELLOW='\033[1;33m'
+  197  NC='\033[0m' 
+  198  usage() {       echo -e "\e[32m
+  199     ██████╗   ██████╗    █████╗   ███████╗
+  200    ██╔════╝  ██╔════╝   ██╔══██╗  ██╔════╝
+  201    ██║       ██║        ██║  ██║  █████╗
+  202    ██║       ██║        ██║  ██║  ██╔══╝
+  203    ╚██████╗  ╚██████╗   ╚█████╔╝  ███████╗
+  204      ╚════╝    ╚════╝     ╚═══╝    ╚═════╝
+  205     AMCH Credential Exporter for terraform workloads from OpenText [ Cloud Center of Excellence ].
+  206       \e[0m";     echo -e "${YELLOW}Usage:${NC} ./$0  <your profile eg: 068500874698_Fed_Account_sre> ";     exit 1; }
+  207  if [[ "$1" == "--help" ]]; then     usage     fi
+  208  check_command() {     if ! command -v "$1" &> /dev/null; then         echo "$2 is not installed. Please install it and try again.";         exit 1;     fi;     }
+  209  check_command aws "AWS CLI"
+  210  check_command jq "JSON processor"
+  211  bash ~/.aws/amch_exporter.sh 264153282450_Fed_Account_Admin
+  212  apt-get install jq -y
+  213  bash ~/.aws/amch_exporter.sh 264153282450_Fed_Account_Admin
+  214  source ~/.bash_profile 
+  215  aws s3 ls
+  216  ll
+  217  python3 -m elb_log_analyzer.s3_log -h
+  218  mkdir check-logs
+  219  cd check-logs/
+  220  python3 -m elb_log_analyzer.s3_log -b elb-log-bucket -p '264153282450-us-west-2-elb-logs /AWSLogs/264153282450/elasticloadbalancing/us-west-2/' -H 10
+  221  which elb_log_analyzer.s3_log
+  222  ll
+  223  rm -rf logs/
+  224  cd ../
+  225  ll
+  226  aws s3 ls 
+  227  whoami
+  228  exit
+  229  whoami
+  230  exit
+  231  useradd praveenha
+  232  passwd praveenha
+  233  vim /etc/ssh/ssh_config
+  234  vim /etc/sudoers
+  235  systemctl restart sshd
+  236  ll
+  237  ls
+  238  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/
+  239  cat ~/.aws/credentials 
+  240  cat ~/.aws/config 
+  241  cat ~/.bash_profile 
+  242  source ~/.bash_profile 
+  243  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/
+  244  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/2024/
+  245  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/2024/11/
+  246  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/2024/11/07/
+  247  aws s3 ls s3://264153282450-us-west-2-elb-logs/AWSLogs/264153282450/elasticloadbalancing/us-west-2/2024/11/06/
+  248  pwd
+  249  mkdir ai_machine_learning
+  250  cd ai_machine_learning/
+  251  curl -fsSL https://ollama.com/install.sh | sh
+  252  vim query.py
+  253  pip install mlrun install scikit-learn~=1.4.0 numpy install pandas langchain langchain_experimental langchain-groq
+  254  pip install mlrun 
+  255  pip uninstall elb-log-analyzer
+  256  pip uninstall elb-log-analyzer --user
+  257  pip install mlrun --user
+  258  pip install mlrun install scikit-learn~=1.4.0
+  259  pip install scikit-learn~=1.4.0
+  260  pip install mlrun  scikit-learn~=1.4.0 numpy install pandas langchain langchain_experimental langchain-groq
+  261  pip install mlrun scikit-learn~=1.4.0 numpy pandas langchain langchain_experimental langchain-groq
+  262  cd ai_machine_learning/
+  263  ollama run llama3
+  264  vim searcher.py
+  265  python3 searcher.py "help me with how many time that restarted worked with id"
+  266  vim searcher.py
+  267  python3 searcher.py "help me with how many time that restarted worked with id"
+  268  python3 -v searcher.py "help me with how many time that restarted server"
+  269  ollama run llam3
+  270  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/images_response.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/images_response.py
+  271  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/images_response.cpython-310.pyc'
+  272  import 'openai.types.images_response' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73e590>
+  273  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/file_list_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/file_list_params.py
+  274  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/file_list_params.cpython-310.pyc'
+  275  import 'openai.types.file_list_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73e740>
+  276  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/moderation_model.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/moderation_model.py
+  277  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/moderation_model.cpython-310.pyc'
+  278  import 'openai.types.moderation_model' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73e980>
+  279  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/batch_list_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/batch_list_params.py
+  280  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/batch_list_params.cpython-310.pyc'
+  281  import 'openai.types.batch_list_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73e770>
+  282  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/image_edit_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/image_edit_params.py
+  283  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/image_edit_params.cpython-310.pyc'
+  284  import 'openai.types.image_edit_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73eb90>
+  285  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/file_create_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/file_create_params.py
+  286  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/file_create_params.cpython-310.pyc'import 'openai.types.file_create_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73f1c0>
+  287  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/batch_create_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/batch_create_params.py
+  288  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/batch_create_params.cpython-310.pyc'
+  289  import 'openai.types.batch_create_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73ee90>
+  290  # /usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/upload_create_params.cpython-310.pyc matches /usr/local/lib/python3.10/dist-packages/openai/types/upload_create_params.py
+  291  # code object from '/usr/local/lib/python3.10/dist-packages/openai/types/__pycache__/upload_create_params.cpython-310.pyc'
+  292  import 'openai.types.upload_create_params' # <_frozen_importlib_external.SourceFileLoader object at 0x7fb45c73ef80>
+  293  ll
+  294  ollama run llama3
+  295  ollama
+  296  ollama list 
+  297  python3 searcher.py 
+  298  python3 searcher.py "how many restarts "
+  299  ollama list 
+  300  ollama run 
+  301  ls
+  302  vim metallama.py
+  303  vim metallama
+  304  mv metallama metallama.py
+  305  python3 metallama.py 
+  306  vim metallama.py 
+  307  python3 metallama.py 
+  308  pip install AutoModelForCasualLM
+  309  vim metallama.py 
+  310  pip install transformers
+  311  python3 metallama.py 
+  312  vim metallama.py 
+  313  python3 -v metallama.py 
+  314  vim metallama.py 
+  315  > metallama.py 
+  316  mv metallama.py metallama
+  317  vim metallama 
+  318  mv metallama metallama.py
+  319  python3 metallama.py 
+  320  vim llama_query
+  321  mv llama_query llama_query.py
+  322  vim llama_query.py 
+  323  python3 llama_query.py 
+  324  oolama
+  325  exit
+  326  ollma
+  327  ollama
+  328  vim llama_query.py 
+  329  python3 llama_query.py 
+  330  pip install ollama
+  331  python3 llama_query.py 
+  332  vim llama_query.py 
+  333  python3 llama_query.py 
+  334  vim llama_query.py 
+  335  python3 llama_query.py 
+  336  python3 llama_query.py "how many times system restrted"
+  337  vim llama_query.py 
+  338  python3 -v llama_query.py "how many times system restrted"
+  339  python3 llama_query.py "how many times system restrted"
+  340  rm -rf llama_query.py 
+  341  rm -rf llama_query
+  342  vim llama_query
+  343  mv llama_query llama_query.py
+  344  python3 llama_query.py "how many times system restrted"
+  345  vim llama_query
+  346  vim llama_query.py 
+  347  python3 llama_query.py "how many times system restrted"
+  348  > metallama.py 
+  349  rm -rf llama_query
+  350  rm -rf llama_query.py 
+  351  vim llama_query
+  352  mv llama_query llama_query.py
+  353  python -v llama_query.py
+  354  python3 -v llama_query.py
+  355  python3 llama_query.py
+  356  vim llama_query.py 
+  357  python3 llama_query.py
+  358  vim llama_query.py 
+  359  python3 llama_query.py
+  360  vim llama_query.py 
+  361  > llama_query.py 
+  362  rm -rf llama_query.py
+  363  vim llama_query
+  364  mv llama_query.py
+  365  mv llama_query llama_query.py
+  366  python3 llama_query.py 
+  367  pip install textblob
+  368  python3 llama_query.py 
+  369  rm -rf llama_query.py
+  370  vim llama_query
+  371  mv llama_query llama_query.py
+  372  python3 llama_query.py 
+  373  rm -rf llama_query.py
+  374  vim llama_query
+  375  mv llama_query llama_query.py
+  376  python3 llama_query.py 
+  377  rm -rf llama_query.py
+  378  vim llama_query
+  379  mv llama_query llama_query.py
+  380  python3 llama_query.py 
+  381  python3 llama_query.py  "how many restarts"
+  382  rm -rf llama_query.py
+  383  pip install ollama
+  384  rm -rf llama_query.py
+  385  vim llama_query
+  386  mv llama_query llama_query.py
+  387  python3 llama_query.py
+  388  pip install chromadb
+  389  python3 llama_query.py
+  390  vim llama_query.py 
+  391  python3 llama_query.py
+  392  ollama pull mxbai-embed-large
+  393  python3 llama_query.py
+  394  ls
+  395  mkdir general
+  396  cd general/
+  397  git 
+  398  git cone https://github.com/tien-tran0906/mistral_personal_mba.git
+  399  git clone https://github.com/tien-tran0906/mistral_personal_mba.git
+  400  cd mistral_personal_mba/
+  401  ll
+  402  cat requirements.txt 
+  403  pip install -r requirements.txt 
+  404  cat requirements.txt 
+  405  pip install chromadb
+  406  ollama pull mistral
+  407  %pip install --upgrade --quiet  langchain sentence_transformers
+  408  pip install --upgrade --quiet  langchain sentence_transformers
+  409  pip install --upgrade --quiet  langchain sentence_transformers --user
+  410  exit
+  411  ls
+  412  cd general/
+  413  ls
+  414  cd mistral_personal_mba/
+  415  ll
+  416  pip install -r requirements.txt 
+  417  vim requirements.txt 
+  418  python3 ingest.py 
+  419  vim ingest.py 
+  420  python3 ingest.py 
+  421  vim ingest.py 
+  422  python3 ingest.py 
+  423  vim ingest.py 
+  424  python3 ingest.py 
+  425  vim ingest.py 
+  426  python3 ingest.py 
+  427  vim requirements.txt 
+  428  pip install fitz
+  429  pip install pymupdf
+  430  python3 ingest.py 
+  431  pwd
+  432  cp ingest.py /mnt/c/Users/PHa/personal-playground/
+  433  history
+  434  history > pipinstall.txt
