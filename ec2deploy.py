@@ -1,83 +1,52 @@
-import re
-import json
-import argparse
-import subprocess
-from langchain_ollama import OllamaLLM
+import boto3
 
-# Initialize LLM with the correct model
-llm = OllamaLLM(model="llama3:latest")
+def deploy_to_ec2(account_id, region):
+    ec2 = boto3.client('ec2', region_name=region)
 
-def parse_natural_language(input_text):
-    """
-    Parse the input natural language into structured JSON using LLM.
-    """
-    prompt = f"""
-    Act as a JSON formatter. Parse the following input:
-    '{input_text}'
-    Always output JSON with the keys 'account_id' and 'region'.
-    Example: {{
-        "account_id": "123456789012",
-        "region": "us-west-2"
-    }}
-    """
-    try:
-        response = llm.invoke(prompt)
-        print(f"Raw response from LLM: {response}")  # Debug raw response
+    # Define parameters for creating an EC2 instance
+    image_id = 'ami-0ee4d25a330ac1474'  # Amazon Linux 2 AMI
+    instance_type = 't3a.medium'
+    key_name = 'Bootstrap-CCoE-Test'
+    subnet_id = 'subnet-09756a29ad1c3d7e1'  # Replace with your subnet ID
+    security_group = 'sg-0acb3e10f2cd85f5f'  # Replace with your security group ID
 
-        # Extract JSON using regex
-        match = re.search(r"\{.*?\}", response, re.DOTALL)  # Matches the first JSON block
-        if not match:
-            raise ValueError("No valid JSON found in LLM response.")
+    user_data = '''#!/bin/bash
+    yum update -y
+    yum install -y httpd
+    systemctl start httpd
+    systemctl enable httpd
+    echo "Hello, World!" > /var/www/html/index.html
+    '''
 
-        # Parse the extracted JSON string
-        json_str = match.group(0)
-        parsed_response = json.loads(json_str)
+    # Launch the EC2 instance
+    response = ec2.run_instances(
+        ImageId=image_id,
+        InstanceType=instance_type,
+        KeyName=key_name,
+        UserData=user_data,
+        MinCount=1,
+        MaxCount=1,
+        SubnetId=subnet_id,
+        SecurityGroupIds=[security_group]
+    )
 
-        # Validate keys
-        if all(key in parsed_response for key in ["account_id", "region"]):
-            return parsed_response
-        else:
-            raise ValueError("Parsed response does not contain all required keys.")
-    except json.JSONDecodeError as e:
-        print(f"Error parsing JSON response: {e}")
-        return None
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return None
+    # Wait for the instance to start up
+    instance_id = response['Instances'][0]['InstanceId']
+    print('Instance ID:', instance_id)
 
-def execute_python_script(script_name, account_id, region):
-    """
-    Executes the target Python script with the parsed arguments.
-    """
-    try:
-        result = subprocess.run(
-            ["python3", script_name, account_id, region],
-            capture_output=True,
-            text=True
-        )
-        print("=== Script Output ===")
-        print(result.stdout)
-        if result.stderr:
-            print("=== Script Errors ===")
-            print(result.stderr)
-    except Exception as e:
-        print(f"Error executing script {script_name}: {e}")
+    # Get the EC2 instance public IP address
+    response = ec2.describe_instances(InstanceIds=[instance_id])
+    ip_address = response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
+    print('Private IP address:', ip_address)
 
 if __name__ == "__main__":
-    # Use argparse to accept user arguments
-    parser = argparse.ArgumentParser(description="Parse natural language input for EC2 deployment.")
-    parser.add_argument("input_text", type=str, help="Natural language input (e.g., 'Deploy EC2 in Account 264153888999 us-west-2 region')")
+    import sys
+    if len(sys.argv) != 3:
+        print("Usage: ec2deploy.py <account_id> <region>")
+        sys.exit(1)
 
-    args = parser.parse_args()
+    account_id = sys.argv[1]
+    region = sys.argv[2]
 
-    # Use the input_text argument
-    parsed_arguments = parse_natural_language(args.input_text)
-    if parsed_arguments:
-        print("Parsed arguments:", parsed_arguments)
-
-        # Extract arguments
-        account_id = parsed_arguments["account_id"]
-        region = parsed_arguments["region"]
-
-        # Execute the ec2deploy.py script
-        execute_python_script("ec2deploy.py", account_id, region)
+    # Call the deployment function
+    deploy_to_ec2(account_id, region)
