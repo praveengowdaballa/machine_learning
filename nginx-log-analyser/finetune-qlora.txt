@@ -1,0 +1,111 @@
+Steps to Fine-Tune LLaMA with QLoRA
+Set Up Environment
+
+Install required libraries:
+pip install transformers peft accelerate bitsandbytes datasets torch
+
+Ensure you have a GPU (preferably with 24GB VRAM or more).
+
+Prepare Training Data
+
+Store your Nginx logs + expected analysis as a dataset (JSONL format).
+
+Example dataset (nginx_logs.jsonl):
+
+{"input": "Log entry: 404 /index.html from IP 192.168.1.1", "output": "Client Error: 404 Not Found, IP: 192.168.1.1"}
+{"input": "Log entry: 500 /api/v1 from IP 10.0.0.5", "output": "Server Error: 500 Internal Server Error
+
+Fine-Tune LLaMA Using QLoRA
+
+Below is a script to fine-tune the 7B LLaMA model using QLoRA with your dataset.
+
+Fine-Tuning Script (QLoRA for LLaMA 2)
+
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer
+from peft import LoraConfig, get_peft_model
+from datasets import load_dataset
+
+# Load dataset (expects JSONL format with "input" and "output" fields)
+dataset = load_dataset("json", data_files={"train": "nginx_logs.jsonl"})
+
+# Load LLaMA 2 model & tokenizer
+model_name = "meta-llama/Llama-2-7b-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# Configure LoRA (Low-Rank Adaptation)
+lora_config = LoraConfig(
+    r=8,  # Rank of adaptation matrices (smaller = faster, larger = more adaptable)
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],  # Apply LoRA only to key attention layers
+    lora_dropout=0.1,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# Apply LoRA to model
+model = get_peft_model(model, lora_config)
+
+# Tokenization function
+def preprocess_function(examples):
+    inputs = tokenizer(examples["input"], padding="max_length", truncation=True, max_length=256)
+    labels = tokenizer(examples["output"], padding="max_length", truncation=True, max_length=256)
+    inputs["labels"] = labels["input_ids"]
+    return inputs
+
+# Preprocess dataset
+tokenized_datasets = dataset.map(preprocess_function, batched=True)
+
+# Training arguments
+training_args = TrainingArguments(
+    output_dir="./qlora-nginx-model",
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=4,
+    num_train_epochs=3,
+    save_strategy="epoch",
+    logging_dir="./logs",
+    logging_steps=10,
+    fp16=True
+)
+
+# Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_datasets["train"],
+    tokenizer=tokenizer
+)
+
+# Train model
+trainer.train()
+
+# Save the fine-tuned model
+model.save_pretrained("fine-tuned-llama-nginx")
+tokenizer.save_pretrained("fine-tuned-llama-nginx")
+
+print("Fine-tuning complete! Model saved at 'fine-tuned-llama-nginx'")
+
+How This Works
+✅ Uses QLoRA → Optimizes model layers to reduce memory usage.
+✅ Trains on Nginx Logs → Fine-tunes for accurate log analysis.
+✅ Reduces GPU RAM Usage → Can run on 24GB VRAM GPUs (like RTX 4090).
+
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_path = "fine-tuned-llama-nginx"
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForCausalLM.from_pretrained(model_path)
+
+# Use it in your existing log analyzer script
+
+Next Steps
+🚀 Train on more diverse logs for better accuracy.
+🛠️ Adjust r=8 in LoraConfig for better balance between speed & adaptability.
+🔍 Test different learning rates & batch sizes for optimal performance.
+
+Now your LLaMA model will be tailored for precise Nginx log analysis! 🔥 Let me know if you need any modifications! 🚀
