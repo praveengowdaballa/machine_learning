@@ -3,6 +3,9 @@ import re
 import psutil
 import pandas as pd
 import streamlit as st
+import json
+import hashlib
+from pathlib import Path
 from datetime import datetime
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -17,11 +20,108 @@ from langchain_ollama import OllamaEmbeddings, OllamaLLM
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="Nginx LogSight Pro",
+    page_title="Nginx LogSight Pro v1.0",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Auth Data Path
+user_data_path = Path("data/users.json")
+user_data_path.parent.mkdir(parents=True, exist_ok=True)
+if not user_data_path.exists():
+    user_data_path.write_text(json.dumps({"users": {}, "pending": {}}))
+
+# Load User DB
+def load_user_db():
+    with user_data_path.open() as f:
+        return json.load(f)
+
+# Save User DB
+def save_user_db(data):
+    with user_data_path.open("w") as f:
+        json.dump(data, f, indent=2)
+
+# Hash password for comparison
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Auth state
+if 'auth_user' not in st.session_state:
+    st.session_state.auth_user = None
+
+# Logout
+if st.session_state.auth_user:
+    with st.sidebar:
+        if st.button("🚪 Logout"):
+            st.session_state.auth_user = None
+            st.success("Logged out successfully.")
+            st.rerun()
+
+# Auth Page
+if st.session_state.auth_user is None:
+    st.title("🔐 Nginx LogSight Pro+ Login")
+
+    tab_login, tab_signup = st.tabs(["Login", "Sign Up"])
+    db = load_user_db()
+
+    with tab_login:
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        if st.button("Login"):
+            if username == "sre-core-admin" and password == "cc0e4help1!":
+                st.session_state.auth_user = "sre-core-admin"
+                st.success("✅ Logged in as admin")
+                st.rerun()
+            elif username in db['users'] and db['users'][username]['password'] == hash_password(password):
+                st.session_state.auth_user = username
+                st.success(f"✅ Logged in as {username}")
+                st.rerun()
+            elif username in db['pending']:
+                st.warning("🕒 Awaiting admin approval.")
+            else:
+                st.error("❌ Invalid credentials")
+
+    with tab_signup:
+        new_user = st.text_input("Corporate Email (e.g. john@opentext.com)")
+        new_pass = st.text_input("New Password", type="password")
+        if st.button("Request Access"):
+            if not new_user.endswith("@opentext.com"):
+                st.warning("❌ Only corporate emails ending with @opentext.com are allowed.")
+            elif new_user in db['users'] or new_user in db['pending']:
+                st.warning("User already exists or pending.")
+            else:
+                db['pending'][new_user] = {"password": hash_password(new_pass)}
+                save_user_db(db)
+                st.success("✅ Enrollment request sent! Await admin approval.")
+
+    st.stop()
+
+# Admin Panel for Approvals
+if st.session_state.auth_user == "sre-core-admin":
+    st.sidebar.markdown("### 🛠 Admin Panel")
+    db = load_user_db()
+    if db['pending']:
+        for user, data in list(db['pending'].items()):
+            with st.sidebar.expander(f"👤 {user}"):
+                if st.button(f"✅ Approve {user}", key=f"approve_{user}"):
+                    db['users'][user] = data
+                    del db['pending'][user]
+                    save_user_db(db)
+                    st.success(f"{user} approved")
+                    st.rerun()
+                if st.button(f"❌ Reject {user}", key=f"reject_{user}"):
+                    del db['pending'][user]
+                    save_user_db(db)
+                    st.warning(f"{user} rejected")
+                    st.rerun()
+    else:
+        st.sidebar.info("No pending users.")
+
+# Block access if not approved user
+if st.session_state.auth_user != "sre-core-admin" and st.session_state.auth_user not in load_user_db().get("users", {}):
+    st.error("Access Denied")
+    st.stop()
 
 # Custom CSS for professional styling
 st.markdown("""
@@ -82,7 +182,7 @@ with st.sidebar:
     with st.expander("⚙️ Model Settings", expanded=True):
         selected_model = st.selectbox(
             "LLM Model",
-            ["llama3:latest", "llama2:latest", "gemma:latest", "mistral:latest"],
+            ["llama2:latest", "gemma:latest"],
             index=0,
         )
         temperature = st.slider("Temperature", 0.1, 1.0, 0.7)
@@ -133,7 +233,7 @@ col1, col2 = st.columns([1, 4])
 with col1:
     st.image("Opentextlogo.png", width=300)
 with col2:
-    st.title("Nginx LogSight Pro")
+    st.title("Nginx LogSight Pro v1.0")
     st.markdown("AI-powered log analysis platform for enterprise-grade Nginx log monitoring and troubleshooting")
 
 st.markdown("---")
